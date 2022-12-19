@@ -5,7 +5,7 @@ let
 in 
 {
     options.trix.services.minecraft = {
-      enable = mkeEnableOption "Enables the packwiz minecraft service";
+      enable = mkEnableOption "Enables the packwiz minecraft service";
     };
     config = mkIf cfg.enable {
       users.users.minecraft = {
