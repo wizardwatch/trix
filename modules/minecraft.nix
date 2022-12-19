@@ -41,6 +41,7 @@ in
     };
       system.activationScripts.minecraft-server-data-dir.text = ''
           mkdir -p ${cfg.dataDir}
+          rm ${cfg.dataDir}/start.sh
           touch ${cfg.dataDir}/start.sh
           echo "#!/bin/sh
 wget -nc -q -O "/srv/minecraft/server.jar" "https://piston-data.mojang.com/v1/objects/f69c284232d7c7580bd89a5a4931c3581eae1378/server.jar"
