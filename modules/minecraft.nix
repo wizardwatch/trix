@@ -6,20 +6,10 @@ in
 {
     options.trix.services.minecraft = {
       enable = mkeEnableOption "Enables the packwiz minecraft service";
-      /*
-      package = mkOption {
-        type = types.package;
-        default = packwiz;
-        defaultText = literalExpression "pkgs.packwiz";
-        example = literalExpression "pkgs.packwiz";
-        description = lib.mdDoc "provide newer version of packwiz";
-      };*/
     };
     config = mkIf cfg.enable {
       users.users.minecraft = {
         description     = "Minecraft server service user";
-        home            = cfg.dataDir;
-        createHome      = true;
         isSystemUser    = true;
         group           = "minecraft";
       };
