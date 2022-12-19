@@ -6,7 +6,12 @@ in
 {
     options.trix.services.minecraft = {
       enable = mkEnableOption "Enables the packwiz minecraft service";
-      dataDir = mkOpt' types.path "/srv/minecraft";
+      dataDir = mkOption rec { 
+        type = types.path;
+        default =  "/srv/minecraft";
+        example = default;
+        description = "the path stuff is kept at";
+      };
     };
     config = mkIf cfg.enable {
       users.users.minecraft = {
