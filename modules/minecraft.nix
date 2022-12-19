@@ -38,11 +38,11 @@ in
         '';
         WorkingDirectory = cfg.dataDir;
       };
+    };
       system.activationScripts.minecraft-server-data-dir.text = ''
           mkdir -p ${cfg.dataDir}
           chown minecraft:minecraft ${cfg.dataDir}
           chmod -R 775 ${cfg.dataDir}
       '';
-    };
  };
 }
