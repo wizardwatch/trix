@@ -6,12 +6,14 @@ in
 {
     options.trix.services.minecraft = {
       enable = mkEnableOption "Enables the packwiz minecraft service";
+      dataDir = mkOpt' types.path "/srv/minecraft";
     };
     config = mkIf cfg.enable {
       users.users.minecraft = {
         description     = "Minecraft server service user";
         isSystemUser    = true;
         group           = "minecraft";
+        home            = cfg.dataDir;
       };
       users.groups.minecraft = {};
       systemd.services.minecraft = {
@@ -29,8 +31,13 @@ in
         ExecStart = ''
         /usr/bin/env bash $(wget https://raw.githubusercontent.com/wizardwatch/winter-wonderland-pack/main/start.sh) 
         '';
-        WorkingDirectory = /var/minecraft;
+        WorkingDirectory = cfg.dataDir;
       };
+      system.activationScripts.minecraft-server-data-dir.text = ''
+          mkdir -p ${cfg.dataDir}
+          chown minecraft:minecraft ${cfg.dataDir}
+          chmod -R 775 ${cfg.dataDir}
+      '';
     };
  };
 }
