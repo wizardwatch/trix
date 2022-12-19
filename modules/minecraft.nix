@@ -29,7 +29,7 @@ in
         ExecStart = ''
         /usr/bin/env bash $(wget https://raw.githubusercontent.com/wizardwatch/winter-wonderland-pack/main/start.sh) 
         '';
-        WorkingDirectory = /etc/minecraft;
+        WorkingDirectory = /var/minecraft;
       };
     };
  };
