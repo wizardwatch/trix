@@ -34,7 +34,7 @@ in
 
         # run the start script for the specified server
         ExecStart = ''
-        /usr/bin/env bash $(wget https://raw.githubusercontent.com/wizardwatch/winter-wonderland-pack/main/start.sh) 
+        wget https://raw.githubusercontent.com/wizardwatch/winter-wonderland-pack/main/start.sh
         '';
         WorkingDirectory = cfg.dataDir;
       };
