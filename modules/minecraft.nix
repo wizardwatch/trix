@@ -2,6 +2,10 @@
 with lib;
 let 
   cfg = config.trix.services.minecraft;
+  jre_headless = pkgs.openjdk17;
+  wget = pkgs.wget;
+  bash = pkgs.bash;
+  sha1 = pkgs.sha1collisiondetection;
 in 
 {
     options.trix.services.minecraft = {
@@ -14,6 +18,7 @@ in
       };
     };
     config = mkIf cfg.enable {
+      networking.firewall.allowedTCPPorts = [ 25565 ];
       users.users.minecraft = {
         description     = "Minecraft server service user";
         isSystemUser    = true;
@@ -27,14 +32,14 @@ in
         description = "start minecraft";
         serviceConfig = {
         Type = "simple";
-        User = "wyatt";
+        User = "minecraft";
         RestartSec = "10s";
         Restart = "always";
         StandardError= "journal";
-
+        path = [pkgs.bash pkgs.openjdk17 pkgs.wget pkgs.sha1collisiondetection];
         # run the start script for the specified server
         ExecStart = ''
-        ${cfg.dataDir}/start.sh
+        ${bash}/bin/bash ${cfg.dataDir}/start.sh
         '';
         WorkingDirectory = cfg.dataDir;
       };
@@ -44,10 +49,14 @@ in
           rm ${cfg.dataDir}/start.sh
           touch ${cfg.dataDir}/start.sh
           echo "#!/bin/sh
-wget -nc -q -O "/srv/minecraft/server.jar" "https://piston-data.mojang.com/v1/objects/f69c284232d7c7580bd89a5a4931c3581eae1378/server.jar"
-wget -nc -q -O "/srv/minecraft/packwiz-installer-bootstrap.jar" "https://github.com/packwiz/packwiz-installer-bootstrap/releases/download/v0.0.3/packwiz-installer-bootstrap.jar"
-${jre_headless}/bin/java -jar /srv/minecraft/packwiz-installer-boostrap.jar
+echo "${sha1}"
+${wget}/bin/wget -nc -O "/srv/minecraft/server.jar" "https://piston-data.mojang.com/v1/objects/f69c284232d7c7580bd89a5a4931c3581eae1378/server.jar"
+${wget}/bin/wget -nc -O "/srv/minecraft/packwiz-installer-bootstrap.jar" "https://github.com/packwiz/packwiz-installer-bootstrap/releases/download/v0.0.3/packwiz-installer-bootstrap.jar"
+chmod +x /srv/minecraft/packwiz-installer-bootstrap.jar
+chmod +x /srv/minecraft/fabric-server-launch.jar 
+${jre_headless}/bin/java -jar /srv/minecraft/packwiz-installer-bootstrap.jar
 ${jre_headless}/bin/java -Xmx6G -jar /srv/minecraft/fabric-server-launch.jar nogui" >> ${cfg.dataDir}/start.sh
+chmod +x ${cfg.dataDir}
           chown minecraft:minecraft ${cfg.dataDir}
           chmod -R 775 ${cfg.dataDir}
       '';
